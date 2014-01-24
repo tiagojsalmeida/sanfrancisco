@@ -1,0 +1,45 @@
+@import "../bower_components/bootstrap/less/bootstrap.less";
+@icon-font-path: "../fonts/glyphicons/";
+@import "../bower_components/font-awesome/less/font-awesome.less";
+@fa-font-path: "../fonts/font-awesome";
+
+//.well, .navbar-inner, .popover, .btn, .tooltip, input, select, textarea, pre, .progress, .modal, .add-on, .alert, .table-bordered, .nav>.active>a, .dropdown-menu, .tooltip-inner, .badge, .label, .img-polaroid {
+//	-moz-box-shadow: none !important;
+//	-webkit-box-shadow: none !important;
+//	box-shadow: none !important;
+//	-webkit-border-radius: 0px !important;
+//	-moz-border-radius: 0px !important;
+//	border-radius: 0px !important;
+//	border-collapse: collapse !important;
+//	background-image: none !important;
+//}
+
+.popover, .popover-inner{
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+}
+.streets, .freeways, .arteries, .neighborhoods{
+    fill: none;
+    stroke-linejoin: round;
+    &.streets{
+        stroke: #89c9ff;
+        stroke-width: 1px;
+    }
+    &.freeways {
+        stroke: #2883d0;
+        stroke-width: 4px;
+    }
+    &.arteries{
+        stroke: #38658b;
+        stroke-width: 2px;
+    }
+    &.neighborhoods{
+        stroke: black;
+        stroke-width: 2px;
+    }
+}
+
+.popover{
+
+}
