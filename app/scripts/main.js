@@ -23,11 +23,11 @@ d3.json("maps/streets.json", function(error, json) {
 	d3.json("maps/arteries.json", function(error, json) {
 		svg.drawMap(json, 'arteries');
 
-		d3.json("maps/neighborhoods.json", function(error, json) {
-			svg.drawMap(json, 'neighborhoods');
+		d3.json("maps/freeways.json", function(error, json) {
+			svg.drawMap(json, 'freeways');
 
-			d3.json("maps/freeways.json", function(error, json) {
-				svg.drawMap(json, 'freeways');
+			d3.json("maps/neighborhoods.json", function(error, json) {
+				svg.drawMap(json, 'neighborhoods');
 
 				mapsLoaded();
 			});
@@ -37,8 +37,8 @@ d3.json("maps/streets.json", function(error, json) {
 
 
 function mapsLoaded(){
-	var routeList = webservice.routeConfigAjax( 'N' );
-	route.renderRoutes( routeList );
+	var routeList = webservice.routeConfigAjax( );
+	route.renderAll( routeList );
 	vehicle.updateLocation( 'N' );
 }
 
@@ -98,9 +98,19 @@ var webservice = {
 		return this.formatUrl(routeConfigData);
 	},
 	routeConfigAjax: function( routeTag ){
-		this.serviceAjax( this.routeConfigUrl( routeTag ), 'routeConfigStorage' );
+		this.serviceAjax( this.routeConfigUrl( routeTag ), 'routeConfigStorage', routeTag, this.routeConfigAjaxFormat );
 		return this.routeConfigStorage;
 
+	},
+	routeConfigAjaxFormat: function(data){
+		if( data.route ){
+			var auxData = {};
+			$.each( data.route, function(k,v){
+				auxData[ v.$.tag ] = v;
+			});
+			return auxData;
+		}
+		return data;
 	},
 	vehicleLocationsStorage: [],
 	vehicleLocationsStorageToUpdate: [],
@@ -152,25 +162,52 @@ var webservice = {
 };
 
 var route = {
-	renderRoutes: function ( routeList ){
-		if( routeList.route.$ ){
-			route.renderRoute( routeList.route );
-		} else {
-			$.each(routeList.route,function(k,v){
-				route.renderRoute( v );
-			})
-		}
+	renderAll: function ( routeList ){
+		$.each(routeList,function(k,v){
+			route.render( v );
+		})
 	},
-	renderRoute: function( route ){
-		$.each(route.path,function(key,path){
+	render: function( r ){
+		$.each(r.path,function(key,path){
+			svg.append('path')
+				.attr("d", routeLineFunction(path.point) )
+				.attr("class", "route" )
+				.attr("data-tag", r.$.tag )
+				.attr("stroke", '#' + r.$.color )
+				.attr("stroke-width", 2)
+				.style("stroke-opacity", 0.3)
+				.attr("fill", "none");
+
 			svg.append("path")
 				.attr("d", routeLineFunction(path.point) )
-				.attr("data-tag", route.$.tag )
-				.attr("stroke", "red")
-				.attr("stroke-width", 3)
-				.style("stroke-opacity", 0.5)
-				.attr("fill", "none");
+				.attr("data-tag", r.$.tag )
+				.attr("stroke", 'transparent' )
+				.attr("stroke-width", 10)
+				.attr("fill", "none")
+				.each( function(){
+					$(this).tooltip({
+						'title': r.$.tag,
+						'space': 40
+					});
+				})
+				.on('mouseenter', function(){
+					route.select(r.$.tag)
+				})
+				.on('mouseleave', route.deselect );
+
 		});
+	},
+	select: function(routeTag){
+		if(!routeTag)
+			return;
+		var routeClass = '.route[data-tag="' + routeTag + '"]';
+		d3.selectAll('.map').style("stroke-opacity", 0.5);
+		d3.selectAll('.route').style("stroke-opacity", 0.05);
+		d3.selectAll(routeClass).style("stroke-opacity", 1).attr("stroke-width", 3);
+	},
+	deselect: function(){
+		d3.selectAll('.map').style("stroke-opacity",0.7);
+		d3.selectAll('.route').style("stroke-opacity", 0.3).attr("stroke-width", 2);
 	}
 },
 routeLineFunction = d3.svg.line()
@@ -194,11 +231,6 @@ var vehicle = {
  * TOOLS
  */
 
-/* Invoke the tip in the context of your visualization */
-var div = d3.select("body").append("div")
-	.attr("class", "tooltip")
-	.style("opacity", 0);
-
 d3.selection.prototype.drawVehicle = function( json ) {
 	var draw = this
 		.data(json);
@@ -221,21 +253,22 @@ d3.selection.prototype.drawVehicle = function( json ) {
 		.attr("fill", "black");
 
 	draw.attr("class", vehicle.className )
-//		.attr("data-hint", 'Yeah, I am >:D')
-//		.attr("data-toggle", "tooltip" )
-//		.attr("title", "lol" )
 		.attr("data-route-tag", function (d) { return d.$.routeTag; } )
 		.attr("data-dir-tag", function (d) { return d.$.dirTag; } )
 		.attr("data-heading", function (d) { return d.$.heading; } )
 		.attr("data-id", function (d) { return d.$.id; } )
 		.each(function(d,i){
 			$(this).popover({
-				'title': 'This is a popover',
+				'title': d.$.routeTag,
 				'content': 'For the '+ d.$.heading+'th circle',
 				'placement': 'top'
 			});
 
 		})
+		.on('mouseenter', function(d){
+			route.select(d.$.routeTag)
+		})
+		.on('mouseleave', route.deselect )
 		.transition()
 		.attr("cx", function (d) { return projection([d.$.lon,d.$.lat])[0]; })
 		.attr("cy", function (d) { return projection([d.$.lon,d.$.lat])[1]; });
@@ -250,7 +283,7 @@ d3.selection.prototype.drawMap = function(json, className) {
 	return this
 		.append("path")
 		.datum(json)
-		.attr("class", className)
+		.attr("class", 'map ' + className)
 		.style("fill", "none")
 		.attr("d", path);
 };

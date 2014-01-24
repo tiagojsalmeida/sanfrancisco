@@ -7295,10 +7295,16 @@ td.visible-print {
   content: "\f196";
 }
 .popover,
-.tooltip-inner {
+.popover-inner {
   -moz-box-shadow: none !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
+}
+.popover {
+  margin-left: 4px;
+}
+.map {
+  opacity: 0.7;
 }
 .streets,
 .freeways,
@@ -7332,7 +7338,7 @@ td.visible-print {
 .freeways.neighborhoods,
 .arteries.neighborhoods,
 .neighborhoods.neighborhoods {
-  stroke: black;
+  stroke: rgba(40, 131, 208, 0.4);
   stroke-width: 2px;
 }
 /*# sourceMappingURL=/styles/main.css.map */
