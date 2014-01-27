@@ -1,5 +1,24 @@
 var width = 1440,
-    height = 960;
+    height = 960,
+	isMoving = false;
+
+
+function redraw() {
+//	if(isMoving)
+//		return false;
+	console.log('test');
+//	isMoving = true;
+	trans = d3.event.translate;
+	scale = d3.event.scale;
+	d3.selectAll('path, circle').attr("transform", "translate(" + trans + ")" + " scale(" + scale + ")");
+//	setTimeout( function(){
+//		isMoving = false;
+//	},200);
+}
+
+var zoom = d3.behavior.zoom()
+	.scaleExtent([-.15, 7]);
+
 
 // set projection
 projection = d3.geo.mercator();
@@ -8,14 +27,44 @@ projection = d3.geo.mercator();
 path = d3.geo.path()
     .projection(projection);
 
+//X = d3.scale.linear()
+//	.domain([0, 6])
+//	.range([0, width]);
+//Y = d3.scale.linear()
+//	.domain([0, 12])
+//	.range([0, height]);
+//
+//transform = function(d) {
+//	return "translate(" + (X(d.cx)) + ", " + (Y(d.cy)) + ")";
+//};
+//
+//zoom = d3.behavior.zoom()
+//	.x(X)
+//	.y(Y)
+//	.on("zoom", function() {
+//		ortho(d3.event.scale);
+////		svg.attr("transform","translate("+d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+////		svg.selectAll(".map")
+////			.attr("r",6/d3.event.scale)
+////			.attr("stroke-width",1/d3.event.scale);
+////		console.log(this);
+////		console.log(svg);
+////		d3.selectAll('.map')[0].transition().style("stroke", 'grey');
+////
+////		return d3.selectAll('.map')[0].transition().attr("transform", transform);
+//
+//	});
+
+
+
 svg = d3.select("body").append("svg")
                 .attr("width", width)
-                .attr("height", height);
+                .attr("height", height)
+				.call(zoom.on("zoom", redraw))
 
 projection
   .scale(308500)
   .center([-122.48, 37.80]);
-
 
 d3.json("maps/streets.json", function(error, json) {
 	svg.drawMap(json, 'streets');
@@ -285,6 +334,7 @@ d3.selection.prototype.drawMap = function(json, className) {
 		.datum(json)
 		.attr("class", 'map ' + className)
 		.style("fill", "none")
+//		.call(zoom.on("zoom", redraw))
 		.attr("d", path);
 };
 
