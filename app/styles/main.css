@@ -7448,13 +7448,17 @@ td.visible-print {
   width: 50px;
   text-align: center;
   text-indent: 0px;
-  padding-top: 10px;
+  padding: 2px 0px;
   font-size: 20px;
   color: #FFF;
   -ms-box-sizing: content-box;
   -moz-box-sizing: content-box;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
+}
+#wrapper #sidebar-wrapper .sidebar-nav li span.fa:before {
+  display: block;
+  padding-top: 8px;
 }
 #wrapper #page-content-wrapper {
   padding-left: 0;

@@ -47,9 +47,9 @@ d3.json("maps/streets.json", function(error, json) {
 
 
 function mapsLoaded(){
-	var routeList = webservice.routeConfigAjax( );
-	route.renderAll( routeList );
-	vehicle.updateLocation( 'N' );
+	var showOnly = false;
+	route.update( showOnly );
+	vehicle.updateLocation( showOnly );
 }
 
 /*

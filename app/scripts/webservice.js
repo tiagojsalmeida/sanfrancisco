@@ -8,30 +8,33 @@ var webservice = {
 	formatUrl: function( data ){
 		return this.basePath + $.param(data);
 	},
-	serviceAjax: function ( url, storage, objectName, formatData ){
+	serviceAjax: function ( url, storage, formatData ){
 		var self = this;
-		$.ajax({
-			url: url,
-			dataType: 'xml',
-			async: false
-		}).done( function( response ){
-			if(response){
-				var json = $.xml2json(response.documentElement);
-				if( json.body ){
-					if( typeof formatData === "function" )
-						json.body = formatData( json.body );
-					if(storage){
-						if( objectName ){
-							self[storage][objectName] = json.body;
-						} else {
+		self.requestTimes = 0;
+		self.request = function(){
+			$.ajax({
+				url: url,
+				dataType: 'xml',
+				async: false
+			}).always( function( response ){
+				if(response){
+					var json = $.xml2json(response.documentElement);
+					if( json.body ){
+						if( typeof formatData === "function" )
+							json.body = formatData( json.body );
+						if(storage){
 							self[storage] = json.body;
 						}
 					}
-
+				} else {
+					self.requestTimes++;
+					if(self.requestTimes <= 3){
+						self.request();
+					}
 				}
-
-			}
-		});
+			});
+		};
+		self.request();
 	},
 	routeConfigStorage: [],
 	routeConfigUrl: function( routeTag ){
@@ -45,16 +48,20 @@ var webservice = {
 		return this.formatUrl(routeConfigData);
 	},
 	routeConfigAjax: function( routeTag ){
-		this.serviceAjax( this.routeConfigUrl( routeTag ), 'routeConfigStorage', routeTag, this.routeConfigAjaxFormat );
+		this.serviceAjax( this.routeConfigUrl( routeTag ), 'routeConfigStorage', this.routeConfigAjaxFormat );
 		return this.routeConfigStorage;
 
 	},
 	routeConfigAjaxFormat: function(data){
 		if( data.route ){
 			var auxData = {};
-			$.each( data.route, function(k,v){
-				auxData[ v.$.tag ] = v;
-			});
+			if( data.route.$ ){
+				auxData[ data.route.$.tag ] = data.route;
+			} else {
+				$.each( data.route, function(k,v){
+					auxData[ v.$.tag ] = v;
+				});
+			}
 			return auxData;
 		}
 		return data;
@@ -75,11 +82,8 @@ var webservice = {
 		return this.formatUrl(vehicleLocationslData);
 	},
 	vehicleLocationsAjax: function( routeTag ){
-		this.serviceAjax( this.vehicleLocationsUrl( routeTag, this.vehicleLocationsLastTime ), 'vehicleLocationsStorageToUpdate', null, this.vehicleLocationsAjaxFormat );
+		this.serviceAjax( this.vehicleLocationsUrl( routeTag, this.vehicleLocationsLastTime ), 'vehicleLocationsStorageToUpdate', this.vehicleLocationsAjaxFormat );
 		this.vehicleLocationsLastTime = new Date().valueOf();
-//		if(routeTag){
-//			return this.vehicleLocationsStorage[ routeTag ];
-//		}
 		return this.vehicleLocationsStorage;
 	},
 	vehicleLocationsAjaxFormat: function( data ){
