@@ -30,7 +30,7 @@ var route = {
 
 		$.each(routeList,function(k,v){
 			route.render( v );
-		})
+		});
 	},
 	render: function( r ){
 		$.each(r.path,function(key,path){
@@ -62,7 +62,7 @@ var route = {
 
 		});
 		/*
-			Enable this to add the bus stops
+			TODO: IMPROVE BUS STOPS
 		 */
 //		svg.selectAll( '.route-stop').data(r.stop)
 //			.enter()
@@ -81,18 +81,26 @@ var route = {
 	select: function(routeTag){
 		if(!routeTag)
 			return;
-		var routeClass = '.route[data-tag="' + routeTag + '"]';
+		var routeClass = '.route[data-tag="' + routeTag + '"]',
+			vehicleClass = '.' + vehicle.className + '[data-route-tag="' + routeTag + '"]';
+
 		d3.selectAll('.map').hideMap();
 		d3.selectAll('.route:not(.active)').routeHide();
-		d3.selectAll(routeClass).routeShow();
+		d3.selectAll('.' + vehicle.className + ':not(.active)').vehicleHide();
+		d3.selectAll( routeClass ).routeShow();
+		d3.selectAll( vehicleClass ).vehicleShow();
 	},
 	deselect: function(){
 		if(d3.selectAll('.route.active').empty()){
 			d3.selectAll('.map').showMap();
 			d3.selectAll('.route:not(.active)').routeNormal();
+			d3.selectAll('.' + vehicle.className + ':not(.active)').vehicleShow();
+
 		} else {
 			d3.selectAll('.route:not(.active)').routeHide();
+			d3.selectAll('.' + vehicle.className + ':not(.active)').vehicleHide();
 			d3.selectAll('.route.active').routeShow();
+			d3.selectAll('.' + vehicle.className + '.active').vehicleShow();
 		}
 	}
 },
@@ -105,6 +113,14 @@ routeLineFunction = d3.svg.line()
 /*
  * ROUTE TOOLS
  */
+
+d3.selection.prototype.vehicleShow = function() {
+	return this.style("opacity", 1);
+};
+
+d3.selection.prototype.vehicleHide = function() {
+	return this.style("opacity", 0.3);
+};
 
 d3.selection.prototype.routeHide = function() {
 	return this.style("stroke-opacity", 0.05).attr("stroke-width", 2);

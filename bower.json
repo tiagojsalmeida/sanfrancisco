@@ -9,7 +9,8 @@
     "d3": "~3.4.0",
     "r2d3": "~0.2.0",
     "topojson": "~1.4.5",
-    "jquery-xml2json": "~0.0.5"
+    "jquery-xml2json": "~0.0.5",
+    "nanoscroller": "~0.7.6"
   },
   "devDependencies": {}
 }

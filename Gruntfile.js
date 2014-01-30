@@ -1,4 +1,3 @@
-// Generated on 2014-01-12 using generator-bootstrap-less 3.2.0
 'use strict';
 
 module.exports = function (grunt) {
@@ -135,26 +134,6 @@ module.exports = function (grunt) {
         dirs: ['<%= sanfrancisco.dist %>']
       }
     },
-    imagemin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= sanfrancisco.app %>/images',
-          src: '{,*/}*.{png,jpg,jpeg}',
-          dest: '<%= sanfrancisco.dist %>/images'
-        }]
-      }
-    },
-    svgmin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= sanfrancisco.app %>/images',
-          src: '{,*/}*.svg',
-          dest: '<%= sanfrancisco.dist %>/images'
-        }]
-      }
-    },
     cssmin: {
       dist: {
         files: {
@@ -167,17 +146,6 @@ module.exports = function (grunt) {
     },
     htmlmin: {
       dist: {
-        options: {
-          /*removeCommentsFromCDATA: true,
-          // https://github.com/sanfrancisco/grunt-usemin/issues/44
-          //collapseWhitespace: true,
-          collapseBooleanAttributes: true,
-          removeAttributeQuotes: true,
-          removeRedundantAttributes: true,
-          useShortDoctype: true,
-          removeEmptyAttributes: true,
-          removeOptionalTags: true*/
-        },
         files: [{
           expand: true,
           cwd: '<%= sanfrancisco.app %>',
@@ -220,8 +188,6 @@ module.exports = function (grunt) {
     concurrent: {
       dist: [
         'less',
-        'imagemin',
-        'svgmin',
         'htmlmin'
       ]
     }

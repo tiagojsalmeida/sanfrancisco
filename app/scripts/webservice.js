@@ -19,7 +19,7 @@ var webservice = {
 			}).always( function( response ){
 				if(response){
 					var json = $.xml2json(response.documentElement);
-					if( json.body ){
+					if( json && json.body ){
 						if( typeof formatData === "function" )
 							json.body = formatData( json.body );
 						if(storage){

@@ -50,6 +50,12 @@ function mapsLoaded(){
 	var showOnly = false;
 	route.update( showOnly );
 	vehicle.updateLocation( showOnly );
+	setInterval(
+		function(){
+			vehicle.updateLocation( showOnly )
+		},
+		15000
+	);
 }
 
 /*
