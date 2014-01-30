@@ -76,26 +76,6 @@ module.exports = function (grunt) {
       },
       server: '.tmp'
     },
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= sanfrancisco.app %>/scripts/{,*/}*.js',
-        '!<%= sanfrancisco.app %>/scripts/vendor/*',
-        'test/spec/{,*/}*.js'
-      ]
-    },
-    mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://localhost:<%= connect.options.port %>/index.html']
-        }
-      }
-    },
     less: {
       dist: {
         files: {
@@ -113,6 +93,7 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
+//            '<%= sanfrancisco.dist %>/maps/{,*/}*.json',
             '<%= sanfrancisco.dist %>/scripts/{,*/}*.js',
             '<%= sanfrancisco.dist %>/styles/{,*/}*.css',
             '<%= sanfrancisco.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
@@ -164,6 +145,7 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             'fonts/{,*/}*.*',
+            'maps/*.json',
             '.htaccess',
             'images/{,*/}*.{webp,gif}'
           ]
@@ -216,8 +198,7 @@ module.exports = function (grunt) {
     'clean:server',
     'less',
     'copy:server',
-    'connect:test',
-    'mocha'
+    'connect:test'
   ]);
 
   grunt.registerTask('build', [
@@ -234,7 +215,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', [
-    'jshint',
     'test',
     'build'
   ]);
