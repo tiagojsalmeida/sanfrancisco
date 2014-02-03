@@ -7,7 +7,6 @@
     "modernizr": "~2.6.2",
     "jquery": "~1.9.1",
     "d3": "~3.4.0",
-    "r2d3": "~0.2.0",
     "topojson": "~1.4.5",
     "jquery-xml2json": "~0.0.5",
     "nanoscroller": "~0.7.6"
