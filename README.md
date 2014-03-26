@@ -53,3 +53,6 @@ grunt;
 * Add Route schedules;
 * Add messages and additional informations;
 * Improve performance;
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tiagojsalmeida/sanfrancisco/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
